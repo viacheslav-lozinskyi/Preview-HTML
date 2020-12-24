@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Opacity</title>
+	<style>
+		body {
+			font: 14px courier;
+			background: #c72 url("");
+			padding: 20px;
+		}
+	
+		p {
+			background: #577028 url("https://static2.makeuseofimages.com/wp-content/uploads/2019/04/sunlit-birds.jpg?q=50&fit=crop&w=750&dpr=1.5");
+			margin: 0;
+			width: 240px;
+			height: 240px;
+			float: left;
+			text-align: center;
+		}
+		code {
+			background: white;
+			padding: 0 15px 2px;
+		}
+
+		#opacity1 {
+			opacity: 1;
+		}
+		#opacity2 {
+			opacity: 0.8;
+		}
+		#opacity3 {
+			opacity: 0.5;
+		}
+		#opacity4 {
+			opacity: 0.2;
+		}
+		#opacity5 {
+			opacity: 0;
+		}
+		
+		#borderCollie {
+			background: white;
+			opacity: .5;
+			transition: opacity .5s;
+		}
+		#borderCollie a {
+			display: block;
+			height: 165px;
+			padding-top: 75px;
+		}
+		#borderCollie:hover {
+			opacity: 1;
+		}
+	</style>
+</head>
+<body>
+	<p id="opacity1"><code>opacity: 1;</code></p>
+	<p id="opacity2"><code>opacity: 0.8;</code></p>
+	<p id="opacity3"><code>opacity: 0.5;</code></p>
+	<p id="opacity4"><code>opacity: 0.2;</code></p>
+	<p id="opacity5"><code>opacity: 0;</code></p>
+</body>
+</html>
