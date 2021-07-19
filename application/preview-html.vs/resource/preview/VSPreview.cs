@@ -289,7 +289,7 @@ namespace resource.preview
                         var a_Size = a_Context.Document.Body.ScrollRectangle.Width;
                         {
                             a_Size = Math.Max(a_Size, GetProperty(NAME.PROPERTY.PREVIEW_WIDTH, true));
-                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT_PREVIEW_MIN_WIDTH); // TODO: Remove it
+                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_WIDTH); // TODO: Remove it
                         }
                         {
                             a_Context.Width = a_Size;
@@ -297,9 +297,9 @@ namespace resource.preview
                         }
                     }
                     {
-                        var a_Size = (a_Context.Height + CONSTANT.OUTPUT_PREVIEW_ITEM_HEIGHT - 1) / CONSTANT.OUTPUT_PREVIEW_ITEM_HEIGHT;
+                        var a_Size = (a_Context.Height + CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT - 1) / CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT;
                         {
-                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT_PREVIEW_MIN_SIZE);
+                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_SIZE);
                         }
                         for (var i = 0; i < a_Size; i++)
                         {
