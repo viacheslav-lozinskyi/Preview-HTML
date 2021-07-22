@@ -8,7 +8,7 @@
 
 ---
 
-### Now you can look inside [HTML](https://en.wikipedia.org/wiki/HTML) file not opening it.
+### Now you can look inside [HTML](https://en.wikipedia.org/wiki/HTML) and [HTM](https://en.wikipedia.org/wiki/HTML) file not opening it.
 
 ---
 
@@ -22,7 +22,7 @@ Download the extension from the [Visual Studio Marketplace](https://marketplace.
 
 Data visualization is based on [MetaOutput](https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2019)
 
-Data extraction is based on [AngleSharp](https://anglesharp.github.io/)
+Data extraction is based on [Html Agility Pack](https://github.com/zzzprojects/html-agility-pack)
 
 ---
 
