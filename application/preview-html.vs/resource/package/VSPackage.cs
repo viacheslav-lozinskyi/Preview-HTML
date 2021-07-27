@@ -28,7 +28,6 @@ namespace resource.package
                 extension.AnyPreview.Connect();
                 extension.AnyPreview.Register(".HTML", new resource.preview.VSPreview());
                 extension.AnyPreview.Register(".HTM",  new resource.preview.VSPreview());
-                extension.AnyPreview.Register(".CSS",  new resource.preview.VSPreview());
             }
             {
                 await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

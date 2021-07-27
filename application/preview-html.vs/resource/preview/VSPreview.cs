@@ -1,10 +1,8 @@
-using AngleSharp;
-using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using AngleSharp.Io;
+﻿using HtmlAgilityPack;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -12,187 +10,6 @@ namespace resource.preview
 {
     internal class VSPreview : extension.AnyPreview
     {
-        internal class HINT
-        {
-            public static string DATA_TYPE = "[[[Data Type]]]";
-        }
-
-        internal class Anchors
-        {
-            static public void Execute(atom.Trace context, int level, IHtmlCollection<IHtmlAnchorElement> data)
-            {
-                if ((data != null) && (data.Length > 0))
-                {
-                    context.
-                        SetComment(GetArraySize(data)).
-                        Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, "[[[Anchors]]]");
-                    foreach (var a_Context in data)
-                    {
-                        var a_Name = GetFirstLine(a_Context.GetAttribute("Name"));
-                        if (string.IsNullOrEmpty(a_Name) == false)
-                        {
-                            context.
-                                SetComment("[[[Anchor]]]", HINT.DATA_TYPE).
-                                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, a_Name);
-                            {
-                                Send(context, NAME.TYPE.PARAMETER, level + 2, "[[[Download]]]", a_Context.Download);
-                                Send(context, NAME.TYPE.PARAMETER, level + 2, "[[[Language]]]", a_Context.TargetLanguage);
-                                Send(context, NAME.TYPE.PARAMETER, level + 2, "[[[Relation]]]", a_Context.Relation);
-                                Send(context, NAME.TYPE.PARAMETER, level + 2, "[[[Target]]]", a_Context.Target);
-                                Send(context, NAME.TYPE.PARAMETER, level + 2, "[[[Type]]]", a_Context.Type);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        internal class Forms
-        {
-            static public void Execute(atom.Trace context, int level, IHtmlCollection<IHtmlFormElement> data)
-            {
-                if ((data != null) && (data.Length > 0))
-                {
-                    context.
-                        SetComment(GetArraySize(data)).
-                        Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, "[[[Forms]]]");
-                    foreach (var a_Context in data)
-                    {
-                        context.
-                            SetUrl(a_Context.Action).
-                            SetComment("[[[Form]]]", HINT.DATA_TYPE).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, GetFirstLine(a_Context.Action));
-                        {
-                        }
-                    }
-                }
-            }
-        }
-
-        internal class Images
-        {
-            static public void Execute(atom.Trace context, int level, IHtmlCollection<IHtmlImageElement> data)
-            {
-                if ((data != null) && (data.Length > 0))
-                {
-                    context.
-                        SetComment(GetArraySize(data)).
-                        Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, "[[[Images]]]");
-                    foreach (var a_Context in data)
-                    {
-                        if (string.IsNullOrEmpty(a_Context.Source) == false)
-                        {
-                            context.
-                                SetUrl(a_Context.Source).
-                                SetComment("[[[Image]]]", HINT.DATA_TYPE).
-                                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, GetFileName(a_Context.Source));
-                            {
-                                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
-                                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
-                                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
-                                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        internal class Links
-        {
-            static public void Execute(atom.Trace context, int level, IHtmlCollection<IElement> data)
-            {
-                if ((data != null) && (data.Length > 0))
-                {
-                    context.
-                        SetComment(GetArraySize(data)).
-                        Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, "[[[Links]]]");
-                    foreach (var a_Context in data)
-                    {
-                        var a_Name1 = GetFirstLine(NodeExtensions.Text(a_Context));
-                        var a_Name2 = GetFirstLine(NodeExtensions.HyperReference(a_Context, a_Context.GetAttribute("Href"))?.Href);
-                        if (string.IsNullOrEmpty(a_Name1))
-                        {
-                            a_Name1 = GetFirstLine(a_Context.InnerHtml);
-                        }
-                        if ((string.IsNullOrEmpty(a_Name1) == false) || (string.IsNullOrEmpty(a_Name2) == false))
-                        {
-                            context.
-                                SetUrl(a_Name2).
-                                SetComment("[[[Link]]]", HINT.DATA_TYPE).
-                                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, a_Name1);
-                        }
-                    }
-                }
-            }
-        }
-
-        public static string GetArraySize(IEnumerable data)
-        {
-            var a_Result = 0;
-            foreach (var a_Context in data)
-            {
-                a_Result++;
-            }
-            return "[[[Found]]]: " + a_Result.ToString();
-        }
-
-        public static string GetFileName(string data)
-        {
-            if (string.IsNullOrEmpty(data) == false)
-            {
-                var a_Result = data.Replace("\r", "\n").Trim();
-                {
-                    var a_Index = a_Result.IndexOf("\n");
-                    if (a_Index > 0)
-                    {
-                        a_Result = a_Result.Substring(0, a_Index);
-                    }
-                }
-                {
-                    var a_Index = a_Result.IndexOf("?");
-                    if (a_Index > 0)
-                    {
-                        a_Result = a_Result.Substring(0, a_Index);
-                    }
-                }
-                {
-                    var a_Index = a_Result.IndexOf("#");
-                    if (a_Index > 0)
-                    {
-                        a_Result = a_Result.Substring(0, a_Index);
-                    }
-                }
-                return Path.GetFileName(a_Result);
-            }
-            return "";
-        }
-
-        public static string GetFirstLine(string data)
-        {
-            if (string.IsNullOrEmpty(data) == false)
-            {
-                var a_Result = data.Replace("\r", "\n").Trim();
-                {
-                    var a_Index = a_Result.IndexOf("\n");
-                    if (a_Index > 0)
-                    {
-                        a_Result = a_Result.Substring(0, a_Index);
-                    }
-                }
-                return a_Result;
-            }
-            return "";
-        }
-
-        public static void Send(atom.Trace context, string type, int level, string name, string value)
-        {
-            if (string.IsNullOrEmpty(value) == false)
-            {
-                context.Send(NAME.SOURCE.PREVIEW, type, level, name, value);
-            }
-        }
-
         protected override void _Execute(atom.Trace context, int level, string url, string file)
         {
             {
@@ -202,28 +19,219 @@ namespace resource.preview
                     SendPreview(NAME.TYPE.INFO, url);
             }
             {
-                var a_Context = Configuration.Default.WithDefaultLoader(new LoaderOptions() { IsNavigationDisabled = false, IsResourceLoadingEnabled = false });
+                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.HEADER, level, "[[[Info]]]");
                 {
-                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.HEADER, level, "[[[Info]]]");
-                    {
-                        context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Name]]]", url);
-                        context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Size]]]", (new FileInfo(file)).Length.ToString());
-                        context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[Raw Format]]]", "HTML");
-                    }
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Name]]]", url);
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Size]]]", (new FileInfo(file)).Length.ToString());
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[Raw Format]]]", "HTML");
                 }
+            }
+            {
+                context.
+                    SetControl(NAME.CONTROL.BROWSER).
+                    SetUrl(url).
+                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level).
+                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level);
             }
             {
                 var a_Context = new Thread(__BrowserThread);
                 {
                     a_Context.SetApartmentState(ApartmentState.STA);
-                    a_Context.Start(new Tuple<string, int>(url, level));
+                    a_Context.Start(new Tuple<string, string, int>(url, file, level));
                 }
             }
         }
 
+        private static void __Execute(atom.Trace context, int level, string url, string file)
+        {
+            context.
+                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOOTER, level, "[[[Document]]]");
+            if (string.IsNullOrEmpty(url) == false)
+            {
+                var a_Context = new HtmlWeb().Load(url);
+                {
+                    var a_Context1 = a_Context.DocumentNode.Descendants();
+                    {
+                        __Execute(context, level + 1, url, file, "[[[Anchors]]]", a_Context1.Where(n => n.Name.ToLower() == "a"));
+                        __Execute(context, level + 1, url, file, "[[[Audios]]]", a_Context1.Where(n => n.Name.ToLower() == "audio"));
+                        __Execute(context, level + 1, url, file, "[[[Canvases]]]", a_Context1.Where(n => n.Name.ToLower() == "canvas"));
+                        __Execute(context, level + 1, url, file, "[[[Forms]]]", a_Context1.Where(n => n.Name.ToLower() == "form"));
+                        __Execute(context, level + 1, url, file, "[[[Images]]]", a_Context1.Where(n => n.Name.ToLower() == "img").Concat(a_Context1.Where(n => n.Name.ToLower() == "svg")));
+                        __Execute(context, level + 1, url, file, "[[[Links]]]", a_Context1.Where(n => n.Name.ToLower() == "link"));
+                        __Execute(context, level + 1, url, file, "[[[Metadata]]]", a_Context1.Where(n => n.Name.ToLower() == "meta"));
+                        __Execute(context, level + 1, url, file, "[[[Frames]]]", a_Context1.Where(n => n.Name.ToLower() == "iframe"));
+                        __Execute(context, level + 1, url, file, "[[[Scripts]]]", a_Context1.Where(n => n.Name.ToLower() == "script"));
+                        __Execute(context, level + 1, url, file, "[[[Styles]]]", a_Context1.Where(n => n.Name.ToLower() == "style"));
+                        __Execute(context, level + 1, url, file, "[[[Videos]]]", a_Context1.Where(n => n.Name.ToLower() == "video"));
+                    }
+                }
+                if (a_Context.ParseErrors != null && a_Context.ParseErrors?.Count() > 0)
+                {
+                    var a_IsFound = false;
+                    {
+                        context.
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level + 1, "[[[Errors]]]");
+                        foreach (var a_Context1 in a_Context.ParseErrors)
+                        {
+                            if (GetState() == NAME.STATE.CANCEL)
+                            {
+                                break;
+                            }
+                            if (a_IsFound == false)
+                            {
+                                context.
+                                    SetComment("{" + a_Context1.Code.ToString() + "}", "[[[Error Code]]]").
+                                    SetUrl(file, a_Context1.Line, a_Context1.LinePosition).
+                                    SetUrlPreview(url);
+                                a_IsFound = true;
+                            }
+                            {
+                                context.
+                                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.ERROR, level + 2, a_Context1.Reason?.Trim());
+                            }
+                        }
+                    }
+                }
+            }
+            {
+                context.
+                    SetFontState(NAME.FONT_STATE.NONE).
+                    SetProgress(100).
+                    SendPreview(NAME.TYPE.INFO, url);
+            }
+        }
+
+        private static void __Execute(atom.Trace context, int level, string url, string file, string name, IEnumerable<HtmlNode> nodes)
+        {
+            if ((nodes != null) && (nodes.Count() > 0))
+            {
+                context.
+                    SetFontState(NAME.FONT_STATE.BOLD).
+                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, name);
+                foreach (var a_Context in nodes)
+                {
+                    var a_Name = "";
+                    {
+                        var a_Context1 = a_Context.Attributes.FirstOrDefault(n => n.Name == "src");
+                        if (a_Context1 != null)
+                        {
+                            a_Name = a_Context1.Value;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(a_Name))
+                    {
+                        var a_Context1 = a_Context.Descendants().FirstOrDefault(n => n.Attributes.Contains("src"));
+                        if (a_Context1 != null)
+                        {
+                            a_Name = a_Context1.Attributes?.FirstOrDefault(n => n.Name == "src")?.Value;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(a_Name))
+                    {
+                        var a_Context1 = a_Context.Attributes.FirstOrDefault(n => n.Name == "href");
+                        if (a_Context1 != null)
+                        {
+                            a_Name = a_Context1.Value;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(a_Name) == false)
+                    {
+                        context.
+                            SetUrlInfo(__GetUrl(url, a_Name));
+                    }
+                    {
+                        context.
+                            SetUrl(file, a_Context.Line, a_Context.LinePosition).
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.OBJECT, level + 1, __GetText(a_Context.OuterHtml));
+                    }
+                    if (string.IsNullOrEmpty(__GetControl(a_Context.Name)) == false)
+                    {
+                        context.
+                            SetControl(__GetControl(a_Context.Name)).
+                            SetUrlPreview(__GetUrl(url, a_Name)).
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
+                    }
+                    if (GetState() == NAME.STATE.CANCEL)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static string __GetControl(string tagName)
+        {
+            var a_Name = tagName.ToLower();
+            {
+                if (a_Name == "audio") return NAME.CONTROL.AUDIO;
+                if (a_Name == "img") return NAME.CONTROL.PICTURE;
+                if (a_Name == "video") return NAME.CONTROL.VIDEO;
+            }
+            return "";
+        }
+
+        private static string __GetText(string text)
+        {
+            var a_Result = text?.Trim();
+            if (string.IsNullOrEmpty(a_Result) == false)
+            {
+                a_Result = a_Result.Replace("\r", " ");
+                a_Result = a_Result.Replace("\n", " ");
+                a_Result = a_Result.Replace("\t", " ");
+            }
+            while (string.IsNullOrEmpty(a_Result) == false)
+            {
+                var a_Context = a_Result;
+                {
+                    a_Result = a_Result.Replace("  ", " ");
+                    a_Result = a_Result.Replace("> ", ">");
+                    a_Result = a_Result.Replace(" <", "<");
+                    a_Result = a_Result.Replace(" }", "}");
+                    a_Result = a_Result.Replace("} ", "}");
+                    a_Result = a_Result.Replace(" {", "{");
+                    a_Result = a_Result.Replace("{ ", "{");
+                }
+                if (a_Context == a_Result)
+                {
+                    break;
+                }
+            }
+            if (string.IsNullOrEmpty(a_Result) == false)
+            {
+                var a_Size = GetProperty(NAME.PROPERTY.DEBUGGING_STRING_SIZE, true);
+                if (a_Size < a_Result.Length)
+                {
+                    a_Result = a_Result.Substring(0, a_Size) + "...";
+                }
+            }
+            return a_Result;
+        }
+
+        private static string __GetUrl(string baseUrl, string newUrl)
+        {
+            try
+            {
+                if ((string.IsNullOrEmpty(baseUrl) == false) && (string.IsNullOrEmpty(newUrl) == false))
+                {
+                    var a_Context1 = new Uri(baseUrl.Replace("\\", "/"), UriKind.RelativeOrAbsolute);
+                    var a_Context2 = new Uri(newUrl.Replace("\\", "/"), UriKind.RelativeOrAbsolute);
+                    {
+                        return (new Uri(a_Context1, a_Context2))?.ToString();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return newUrl;
+        }
+
         private static string __GetUrl(object data)
         {
-            var a_Context = data as Tuple<string, int>;
+            var a_Context = data as Tuple<string, string, int>;
             if (a_Context != null)
             {
                 return a_Context.Item1?.ToString();
@@ -231,12 +239,22 @@ namespace resource.preview
             return null;
         }
 
-        private static int __GetLevel(object data)
+        private static string __GetFile(object data)
         {
-            var a_Context = data as Tuple<string, int>;
+            var a_Context = data as Tuple<string, string, int>;
             if (a_Context != null)
             {
-                return a_Context.Item2;
+                return a_Context.Item2?.ToString();
+            }
+            return null;
+        }
+
+        private static int __GetLevel(object data)
+        {
+            var a_Context = data as Tuple<string, string, int>;
+            if (a_Context != null)
+            {
+                return a_Context.Item3;
             }
             return 0;
         }
@@ -254,6 +272,10 @@ namespace resource.preview
                     a_Context.AllowNavigation = true;
                     a_Context.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(__DocumentCompleted);
                     a_Context.Url = new Uri(__GetUrl(context), UriKind.RelativeOrAbsolute);
+                }
+                if (a_Context.Url == null)
+                {
+                    a_Context.Navigate(__GetUrl(context));
                 }
                 while (a_Context.Tag != null)
                 {
@@ -289,7 +311,7 @@ namespace resource.preview
                         var a_Size = a_Context.Document.Body.ScrollRectangle.Width;
                         {
                             a_Size = Math.Max(a_Size, GetProperty(NAME.PROPERTY.PREVIEW_WIDTH, true));
-                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_WIDTH); // TODO: Remove it
+                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_WIDTH);
                         }
                         {
                             a_Context.Width = a_Size;
@@ -297,30 +319,18 @@ namespace resource.preview
                         }
                     }
                     {
-                        var a_Size = (a_Context.Height + CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT - 1) / CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT;
+                        var a_Size = (a_Context.Height + CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT) / (CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + 1);
                         {
                             a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_SIZE);
                         }
-                        for (var i = 0; i < a_Size; i++)
+                        for (var i = 2; i < a_Size; i++)
                         {
-                            atom.Trace.GetInstance().Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, 1);
+                            atom.Trace.GetInstance().
+                                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, 1);
                         }
                     }
                     {
-                        atom.Trace.GetInstance().
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOOTER, __GetLevel(a_Context1), "[[[Document]]]");
-                        {
-                            //Anchors.Execute(context, __GetLevel(a_Context1) + 1, a_Context1.Anchors);
-                            //Forms.Execute(context, __GetLevel(a_Context1) + 1, a_Context1.Forms);
-                            //Images.Execute(context, __GetLevel(a_Context1) + 1, a_Context1.Images);
-                            //Links.Execute(context, __GetLevel(a_Context1) + 1, a_Context1.Links);
-                        }
-                    }
-                    {
-                        atom.Trace.GetInstance().
-                            SetFontState(NAME.FONT_STATE.NONE).
-                            SetProgress(100).
-                            SendPreview(NAME.TYPE.INFO, __GetUrl(a_Context1));
+                        __Execute(atom.Trace.GetInstance(), __GetLevel(a_Context1), __GetUrl(a_Context1), __GetFile(a_Context1));
                     }
                     {
                         a_Context.Tag = null;
@@ -341,5 +351,4 @@ namespace resource.preview
                 }
             }
         }
-    };
-}
+    }}

@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="PREVIEW-HTML.EC198F83-B43E-48F7-A346-3BA545D132DE" Version="1.0.1" Language="en-US" Publisher="Viacheslav Lozinskyi" />
         <DisplayName>Preview-HTML</DisplayName>
-        <Description xml:space="preserve">Quick preview of HTML, HTM and CSS files</Description>
+        <Description xml:space="preserve">Quick preview of HTML and HTM files</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.Preview-HTML</MoreInfo>
         <License>resource\document\LICENSE</License>
         <Icon>resource\picture\icon.png</Icon>
