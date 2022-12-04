@@ -24,7 +24,7 @@ namespace resource.package
             public const string DESCRIPTION = "Quick preview of HTML, HTM and CSS files";
             public const string GUID = "9DF0A484-5C6F-431A-9F77-2086340F9997";
             public const string NAME = "Preview-HTML";
-            public const string VERSION = "1.0.6";
+            public const string VERSION = "1.0.7";
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

@@ -16,22 +16,22 @@ namespace resource.preview
                 context.
                     SetFontState(NAME.FONT_STATE.BLINK).
                     SetProgress(NAME.PROGRESS.INFINITE).
-                    SendPreview(NAME.TYPE.INFO, url);
+                    SendPreview(NAME.EVENT.INFO, url);
             }
             {
-                context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.HEADER, level, "[[[Info]]]");
+                context.Send(NAME.SOURCE.PREVIEW, NAME.EVENT.HEADER, level, "[[[Info]]]");
                 {
-                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Name]]]", url);
-                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[File Size]]]", (new FileInfo(file)).Length.ToString());
-                    context.Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PARAMETER, level + 1, "[[[Raw Format]]]", "HTML");
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PARAMETER, level + 1, "[[[File Name]]]", url);
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PARAMETER, level + 1, "[[[File Size]]]", (new FileInfo(file)).Length.ToString());
+                    context.Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PARAMETER, level + 1, "[[[Raw Format]]]", "HTML");
                 }
             }
             {
                 context.
                     SetControl(NAME.CONTROL.BROWSER).
                     SetUrl(url).
-                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level).
-                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level);
+                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level).
+                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level);
             }
             {
                 var a_Context = new Thread(__BrowserThread);
@@ -45,7 +45,7 @@ namespace resource.preview
         private static void __Execute(atom.Trace context, int level, string url, string file)
         {
             context.
-                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOOTER, level, "[[[Document]]]");
+                Send(NAME.SOURCE.PREVIEW, NAME.EVENT.FOOTER, level, "[[[Document]]]");
             if (string.IsNullOrEmpty(url) == false)
             {
                 var a_Context = new HtmlWeb().Load(url);
@@ -70,7 +70,7 @@ namespace resource.preview
                     var a_IsFound = false;
                     {
                         context.
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level + 1, "[[[Errors]]]");
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.FOLDER, level + 1, "[[[Errors]]]");
                         foreach (var a_Context1 in a_Context.ParseErrors)
                         {
                             if (GetState() == NAME.STATE.CANCEL)
@@ -87,7 +87,7 @@ namespace resource.preview
                             }
                             {
                                 context.
-                                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.ERROR, level + 2, a_Context1.Reason?.Trim());
+                                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.ERROR, level + 2, a_Context1.Reason?.Trim());
                             }
                         }
                     }
@@ -97,7 +97,7 @@ namespace resource.preview
                 context.
                     SetFontState(NAME.FONT_STATE.NONE).
                     SetProgress(100).
-                    SendPreview(NAME.TYPE.INFO, url);
+                    SendPreview(NAME.EVENT.INFO, url);
             }
         }
 
@@ -107,7 +107,7 @@ namespace resource.preview
             {
                 context.
                     SetFontState(NAME.FONT_STATE.BOLD).
-                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.FOLDER, level, name);
+                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.FOLDER, level, name);
                 foreach (var a_Context in nodes)
                 {
                     var a_Name = "";
@@ -142,17 +142,17 @@ namespace resource.preview
                     {
                         context.
                             SetUrl(file, a_Context.Line, a_Context.LinePosition).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.OBJECT, level + 1, __GetText(a_Context.OuterHtml));
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.OBJECT, level + 1, __GetText(a_Context.OuterHtml));
                     }
                     if (string.IsNullOrEmpty(__GetControl(a_Context.Name)) == false)
                     {
                         context.
                             SetControl(__GetControl(a_Context.Name)).
                             SetUrlPreview(__GetUrl(url, a_Name)).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, level + 2);
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2);
                     }
                     if (GetState() == NAME.STATE.CANCEL)
                     {
@@ -290,9 +290,9 @@ namespace resource.preview
             catch (Exception ex)
             {
                 atom.Trace.GetInstance().
-                    Send(NAME.SOURCE.PREVIEW, NAME.TYPE.EXCEPTION, __GetLevel(context), ex.Message).
+                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.EXCEPTION, __GetLevel(context), ex.Message).
                     SetAlignment(NAME.ALIGNMENT.TOP).
-                    SendPreview(NAME.TYPE.EXCEPTION, __GetUrl(context));
+                    SendPreview(NAME.EVENT.EXCEPTION, __GetUrl(context));
             }
         }
 
@@ -326,7 +326,7 @@ namespace resource.preview
                         for (var i = 2; i < a_Size; i++)
                         {
                             atom.Trace.GetInstance().
-                                Send(NAME.SOURCE.PREVIEW, NAME.TYPE.PREVIEW, 1);
+                                Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, 1);
                         }
                     }
                     {
@@ -343,10 +343,10 @@ namespace resource.preview
                     }
                     {
                         atom.Trace.GetInstance().
-                            Send(NAME.SOURCE.PREVIEW, NAME.TYPE.EXCEPTION, __GetLevel(a_Context1), ex.Message).
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.EXCEPTION, __GetLevel(a_Context1), ex.Message).
                             SetFontState(NAME.FONT_STATE.NONE).
                             SetProgress(100).
-                            SendPreview(NAME.TYPE.EXCEPTION, __GetUrl(a_Context1));
+                            SendPreview(NAME.EVENT.EXCEPTION, __GetUrl(a_Context1));
                     }
                 }
             }
