@@ -8,16 +8,19 @@
 
 ---
 
+## Important information:
 [![MetaOutput](https://www.metaoutput.net/_functions/watch?utm_source=github.com&utm_medium=referral&utm_campaign=view-on-github&utm_content=Preview-HTML&source=GITHUB&size=128x128&project=Preview-HTML&url=https://github.com/viacheslav-lozinskyi/Preview-HTML)](https://www.metaoutput.net/)
 
-### This extension is working only with installed [MetaOutput](https://www.metaoutput.net/) extension!
+This extension is working only with installed [MetaOutput](https://www.metaoutput.net/) extension!
 
 ---
 
-### Now you can look inside [HTML](https://en.wikipedia.org/wiki/HTML) and [HTM](https://en.wikipedia.org/wiki/HTML) file not opening it.
+## Description:
+Now you can look inside [HTML](https://en.wikipedia.org/wiki/HTML) and [HTM](https://en.wikipedia.org/wiki/HTML) file not opening it.
 
 ---
 
+## How it works:
 ![Image](https://viacheslav-lozinskyi.github.io/Preview-HTML/resource/video/Presentation1.gif)
 
 ---
