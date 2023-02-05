@@ -30,8 +30,8 @@ namespace resource.preview
                 context.
                     SetControl(NAME.CONTROL.BROWSER).
                     SetUrl(url).
-                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level).
-                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level);
+                    SetCount(10).
+                    Send(NAME.SOURCE.PREVIEW, NAME.EVENT.CONTROL, level);
             }
             {
                 var a_Context = new Thread(__BrowserThread);
@@ -149,10 +149,8 @@ namespace resource.preview
                         context.
                             SetControl(__GetControl(a_Context.Name)).
                             SetUrlPreview(__GetUrl(url, a_Name)).
-                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2).
-                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, level + 2);
+                            SetCount(4).
+                            Send(NAME.SOURCE.PREVIEW, NAME.EVENT.CONTROL, level + 2);
                     }
                     if (GetState() == NAME.STATE.CANCEL)
                     {
@@ -319,14 +317,14 @@ namespace resource.preview
                         }
                     }
                     {
-                        var a_Size = (a_Context.Height + CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT) / (CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + 1);
+                        var a_Count = (a_Context.Height + CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT + CONSTANT.OUTPUT.PREVIEW_PAGE_INDENT) / (CONSTANT.OUTPUT.PREVIEW_ITEM_HEIGHT + 1);
                         {
-                            a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_SIZE);
+                            a_Count = Math.Max(a_Count, CONSTANT.OUTPUT.PREVIEW_MIN_SIZE);
                         }
-                        for (var i = 2; i < a_Size; i++)
                         {
                             atom.Trace.GetInstance().
-                                Send(NAME.SOURCE.PREVIEW, NAME.EVENT.PREVIEW, 1);
+                                SetCount(a_Count - 2).
+                                Send(NAME.SOURCE.PREVIEW, NAME.EVENT.CONTROL, 1);
                         }
                     }
                     {
