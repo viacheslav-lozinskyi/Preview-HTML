@@ -308,7 +308,7 @@ namespace resource.preview
                     {
                         var a_Size = a_Context.Document.Body.ScrollRectangle.Width;
                         {
-                            a_Size = Math.Max(a_Size, GetProperty(NAME.PROPERTY.PREVIEW_WIDTH, true));
+                            //a_Size = Math.Max(a_Size, GetProperty(NAME.PROPERTY.PREVIEW_WIDTH, true));
                             a_Size = Math.Max(a_Size, CONSTANT.OUTPUT.PREVIEW_MIN_WIDTH);
                         }
                         {
