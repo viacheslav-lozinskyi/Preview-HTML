@@ -14,8 +14,8 @@ namespace resource.preview
         {
             {
                 context.
-                    SetFontState(NAME.FONT_STATE.BLINK).
-                    SetProgress(NAME.PROGRESS.INFINITE).
+                    SetTrace(null, NAME.STATE.TRACE.BLINK).
+                    SetProgress(CONSTANT.PROGRESS.INFINITE).
                     SendPreview(NAME.EVENT.INFO, url);
             }
             {
@@ -73,7 +73,7 @@ namespace resource.preview
                             Send(NAME.SOURCE.PREVIEW, NAME.EVENT.FOLDER, level + 1, "[[[Errors]]]");
                         foreach (var a_Context1 in a_Context.ParseErrors)
                         {
-                            if (GetState() == NAME.STATE.CANCEL)
+                            if (GetState() == NAME.STATE.WORK.CANCEL)
                             {
                                 break;
                             }
@@ -95,7 +95,7 @@ namespace resource.preview
             }
             {
                 context.
-                    SetFontState(NAME.FONT_STATE.NONE).
+                    SetFont(null, 0, NAME.STATE.FONT.NONE).
                     SetProgress(100).
                     SendPreview(NAME.EVENT.INFO, url);
             }
@@ -106,7 +106,7 @@ namespace resource.preview
             if ((nodes != null) && (nodes.Count() > 0))
             {
                 context.
-                    SetFontState(NAME.FONT_STATE.BOLD).
+                    SetFont(null, 0, NAME.STATE.FONT.BOLD).
                     Send(NAME.SOURCE.PREVIEW, NAME.EVENT.FOLDER, level, name);
                 foreach (var a_Context in nodes)
                 {
@@ -152,7 +152,7 @@ namespace resource.preview
                             SetCount(4).
                             Send(NAME.SOURCE.PREVIEW, NAME.EVENT.CONTROL, level + 2);
                     }
-                    if (GetState() == NAME.STATE.CANCEL)
+                    if (GetState() == NAME.STATE.WORK.CANCEL)
                     {
                         break;
                     }
@@ -342,7 +342,7 @@ namespace resource.preview
                     {
                         atom.Trace.GetInstance().
                             Send(NAME.SOURCE.PREVIEW, NAME.EVENT.EXCEPTION, __GetLevel(a_Context1), ex.Message).
-                            SetFontState(NAME.FONT_STATE.NONE).
+                            SetFont(null, 0, NAME.STATE.FONT.NONE).
                             SetProgress(100).
                             SendPreview(NAME.EVENT.EXCEPTION, __GetUrl(a_Context1));
                     }
